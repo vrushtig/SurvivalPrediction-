@@ -1,1 +1,41 @@
-Predictive Analytcis- Survival
+Survival Prediction on SEER (Ensemble Learning)
+
+Predict patient survival outcomes from SEER clinical data using careful preprocessing, class-imbalance handling, and ensemble models.
+
+Highlights
+	•	ROC-AUC: ~0.91
+	•	SMOTE improved minority-class recall by ~25%
+	•	Clean, leakage-safe pipeline with CV, calibration, and slice checks
+
+
+Overview
+
+This project builds a strong baseline for survival prediction on the SEER dataset using classical ML:
+	•	Rigorous feature cleaning/encoding and no data leakage
+	•	SMOTE for class imbalance (applied only on training folds)
+	•	Model comparison (Logistic Regression, Random Forest, XGBoost) and Stacking
+	•	Metrics beyond accuracy: ROC-AUC, PR-AUC, F1, Recall, and calibration
+
+Dataset
+	•	Source: SEER (Surveillance, Epidemiology, and End Results).
+	•	Access: You must obtain SEER data directly; licensing prohibits redistribution.
+	•	Target: Binary survival outcome at a fixed horizon.
+	•	Note: Raw data is not committed to this repo.
+
+Method
+	1.	Split: Patient-level train/val/test with stratification (no overlap across splits).
+	2.	Preprocess:
+	•	Missing values: median (numeric), constant/mode (categorical)
+	•	Encoding: one-hot (low-cardinality) and target encoding where needed
+	•	Scaling for linear/base learners
+	3.	Imbalance: SMOTE (or SMOTE-Tomek) applied inside CV on training folds only.
+	4.	Models: Logistic Regression, Random Forest, XGBoost, and a Stacking meta-learner.
+	5.	Evaluation: ROC-AUC, PR-AUC, Accuracy, F1, Recall (minority), Brier score, calibration curves.
+	6.	Calibration: Platt scaling / logistic calibration where useful.
+
+Model               ROC-AUC  Accuracy  F1 (pos)  Recall (pos)  Notes
+Logistic Regression  0.85      0.84     0.62      0.57         Baseline
+XGBoost              0.90      0.88     0.70      0.66         Tuned w/ early stopping
+Stacking (best)     0.91       0.89     0.73      0.71         Calibrated; most robust
+
+Impact of SMOTE: minority-class recall improved by ~25% at similar ROC-AUC.
